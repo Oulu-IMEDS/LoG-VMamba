@@ -1,0 +1,87 @@
+seed: 12345
+node_rank: 0
+num_nodes: 1
+n_gpus: ~
+prefix: exp_
+experiment_root: ${prefix}dataset:${data.dataset}_method:${method_name}
+experiment_setting: dataset:${data.dataset}_method:${method_name}
+parameter_setting: loss:${model.params.cfg.loss_name}_lr:${optimizer.params.lr}_wd:${optimizer.params.weight_decay}
+trial_setting: seed:${seed}_fold:${data.fold_index}
+# snapshot_dir: experiments/${experiment_setting}_output_${seed}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+snapshot_dir: ${output_root}/${experiment_root}/${experiment_setting}_${parameter_setting}_${trial_setting}
+pipeline_cls: mlpipeline.train.pipeline.MLPipeline
+output_root: outputs
+inference_root: /opt/inference_results
+inference_dir: ${inference_root}/${experiment_root}/${experiment_setting}_${parameter_setting}_${trial_setting}
+method_name: MAE
+train:
+  distributed: false
+  num_epochs: 500
+  continue_train: false
+logging:
+  formatters:
+    simple:
+      format: "[%(asctime)s][%(name)s][%(levelname)s] - %(message)s"
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: simple
+      stream: ext://sys.stdout
+    file:
+      class: logging.FileHandler
+      filename: ${snapshot_dir}/pipeline.log
+      formatter: simple
+  root:
+    handlers:
+      - console
+      - file
+    level: INFO
+  version: 1
+data:
+  root_dir: ~
+  data_dir: ~
+  image_dor: ~
+  mean: ~
+  std: ~
+  num_classes: 5
+  setting: multiclass
+  dataset: ~
+  dataset_cls:
+  site: C
+  fold_index: 0
+  pkl_filename:
+  num_workers: 8
+  batch_size: 64
+  subsample: 1.
+  divide_batch_per_n_gpus: true
+  val_amount: 0.1
+  augs:
+    train:
+      stream:
+        transforms:
+          - flip:
+              axis: 1
+              p: 0.5
+          - pad:
+              pad_to: 36
+              padding: r
+          - crop:
+              crop_to: 32
+              crop_mode: r
+    val:
+      stream:
+        transforms:
+          - pad:
+              pad_to: 32
+              padding: r
+checkpointer:
+  keep_old: false
+  comparator: lt
+optimizer:
+  scheduler:
+    warmup_for: 0
+criterion:
+  cls: torch.nn.BCEWithLogitsLoss
+  params: ~
+defaults:
+  - experiment: oai_mae
