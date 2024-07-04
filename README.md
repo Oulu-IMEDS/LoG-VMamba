@@ -1,4 +1,4 @@
-# LoG-VMamba
+# LoG-VMamba <img src="imgs/icon1.jpeg" alt="Violet Mamba on a Log" width="70"/>
 LoG-VMamba: Local-Global Vision Mamba for Medical Image Segmentation
 
 ## Dependencies
