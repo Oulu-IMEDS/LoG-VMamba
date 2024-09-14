@@ -7,7 +7,7 @@ Arxiv: <a href=https://arxiv.org/abs/2408.14415>Link</a>
 
 ![LTX GTX](./imgs/LTX_GTX.png "Local-Global Token extractors")
 
-![Comparisons](./imgs/LoG_VMamba_results.png.png "Comparisons")
+![Comparisons](./imgs/LoG_VMamba_results.png "Comparisons")
 
 ## Dependencies
 
