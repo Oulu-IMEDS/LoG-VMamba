@@ -1,5 +1,13 @@
-# LoG-VMamba <img src="imgs/icon1.jpeg" alt="Violet Mamba on a Log" width="70"/>
+# <a href=https://arxiv.org/pdf/2408.14415>LoG-VMamba</a> <img src="imgs/icon1.jpeg" alt="Violet Mamba on a Log" width="70"/>
 LoG-VMamba: Local-Global Vision Mamba for Medical Image Segmentation
+
+Arxiv: <a href=https://arxiv.org/abs/2408.14415>Link</a>
+
+![LoG-VMamba](./imgs/LoG_VMamba.png "LoG-VMamba")
+
+![LTX GTX](./imgs/LTX_GTX.png "Local-Global Token extractors")
+
+![Comparisons](./imgs/LoG_VMamba_results.png.png "Comparisons")
 
 ## Dependencies
 
