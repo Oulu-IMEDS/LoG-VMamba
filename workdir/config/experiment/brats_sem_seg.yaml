@@ -1,0 +1,91 @@
+pipeline_cls: mlpipeline.train.semantic_segmentation.SemanticSegmentation
+parameter_setting: ${model.params.cfg.arch}_${model.params.cfg.test_on_patches}_${data.image_size}_${model.params.cfg.loss_name}_${model.params.cfg.loss_type}_${model.params.cfg.pos_weight}_lr:${optimizer.params.lr}_wd:${optimizer.params.weight_decay}
+n_gpus: 1
+eval_baseline_only: true
+data:
+  root_dir: /opt/data/brain_images
+  dataset_cls: mlpipeline.data.dataset.BRATSDataset
+  pkl_filename: cv_split_5folds_brats_12345.pkl
+  pkl_filename_test: cv_split_5folds_brats_test_12345.pkl
+  image_dir:
+    brats: /opt/data/BraTS/MICCAI_BraTS2020_TrainingData
+  image_size: 128
+  image_depth: 128
+  data_dir: ${data.root_dir}/workdir/datasets
+  image_root:
+  fold_index: 0
+  num_classes: 3
+  num_channels: 4
+  num_dims: 4
+  dataset: brats
+  label_name: gt
+  num_workers: 16
+  batch_size: 1
+  gt_mode:
+
+  augs:
+    train:
+    val:
+
+  mean:
+  std:
+
+train:
+  num_epochs: 200
+  distributed: false
+  continue_train: false
+  inference_only: false
+
+model:
+  name: SemanticSegmentation
+  cls: mlpipeline.models.semantic_segmentation.${model.name}
+  pretrained_encoder:
+  pretrained_model:
+  find_unused_parameters: false
+  params:
+    cfg:
+      arch: UMambaEncDC_K1
+      expand: 1
+      encoder_weights: imagenet
+      num_classes: ${data.num_classes}
+      num_channels: ${data.num_channels}
+      image_size: ${data.image_size}
+      image_depth: ${data.image_depth}
+      depth_mode: even
+      conv_mode: full
+      loss_name: dicebce
+      loss_mode: binary
+      loss_type: 5
+      alpha: 1.0
+      beta: 1.0
+      pos_weight: 1.0
+      distance_weight: 1.0
+      dropout: 0.1
+      use_opposite_sign: false
+      pretrained: false
+      test_on_patches: true
+      label_name: ${data.label_name}
+
+optimizer:
+  cls: torch.optim.Adam
+  params:
+    params: ~
+    lr: 1e-4
+    weight_decay: 1e-4
+  scheduler:
+    warmup_for: 0
+    type: milestones
+    gamma: 0.1
+    milestones: [140]
+
+metrics:
+  mode: binary
+  output_mode: binary
+  n_classes: 3
+  threshold: 0.5
+  key_metric: F1
+  reduction: macro-imagewise
+
+checkpointer:
+  keep_old: false
+  comparator: gt
